@@ -256,7 +256,7 @@ public class reimbursement_dao_impl implements reimbursement_dao {
 	
 
 	@Override
-	public void updateReimbursement(int reimb_Id, LocalDateTime reimb_resolved, int reimb_resolver, ers_reimbursement reimb_status) {
+	public Boolean updateReimbursement(int reimb_Id, LocalDateTime reimb_resolved, int reimb_resolver, ers_reimbursement reimb_status) {
 		// Here is where the database for reimbursement can be updated
 				logger.info("In reimbursement_dao_impl - updateUser() started. Updated user info: " + reimb_Id);
 				
@@ -271,12 +271,14 @@ public class reimbursement_dao_impl implements reimbursement_dao {
 					
 					int isSuccessfulUpdate = pstmt.executeUpdate();
 					logger.info("Successful update to DB: 1 FOR YES/0 FOR NO: " + isSuccessfulUpdate);
+					return true;
 				}
 				catch (SQLException sqlExc) {
 					logger.warn("Unable to update reimbursement: " + sqlExc);
 					//System.out.println("This is the user_dao_impl - update() " +sqlExc.getMessage());
 				}
 				logger.info("In reimbursement_dao_impl - updateReimbursement() ended.");
+				return false;
 		
 	}
 	

@@ -26,8 +26,8 @@ public interface reimbursement_dao {
 	
 	
 	// Update
-	public void updateReimbursement(int reimb_Id, LocalDateTime reimb_resolved, int reimb_resolver, ers_reimbursement reimb_status);
-	//Boolean update(int reimb_Id, int reimb_amount,  LocalDateTime reimb_submitted, LocalDateTime reimb_resolved, String reimb_description, String reimb_receipt, int reimb_author, int reimb_resolver, int reimb_status_id, int reimb_type_id);  //used to update fields
+	//public void updateReimbursement(int reimb_Id, LocalDateTime reimb_resolved, int reimb_resolver, ers_reimbursement reimb_status);
+	Boolean updateReimbursement(int reimb_Id, LocalDateTime reimb_resolved, int reimb_resolver, ers_reimbursement reimb_status);  //used to update fields
 	
 	// Delete
 	public void deleteReimbursement();
