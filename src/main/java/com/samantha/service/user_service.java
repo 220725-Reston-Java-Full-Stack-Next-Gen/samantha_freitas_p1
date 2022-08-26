@@ -8,5 +8,8 @@ public interface user_service {
 		
 		public boolean loginUser(String username, String password);
 		
-		ers_users getUserUsingUsername(String username);
+		static ers_users getUserUsingUsername(String username) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 }

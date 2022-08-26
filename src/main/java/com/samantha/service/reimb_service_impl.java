@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.samantha.models.ers_reimbursement;
 import com.samantha.dao.reimbursement_dao;
+import com.samantha.dao.reimbursement_dao_impl;
 
 public class reimb_service_impl implements reimb_service {
 	
@@ -15,7 +16,10 @@ public class reimb_service_impl implements reimb_service {
 	//because we depend on our dao layer here, we will need an instance of it every time we need a new reimb_service_impl object
 	private reimbursement_dao reimbursement_dao;
 	
-	@Override
+	public reimb_service_impl(reimbursement_dao_impl reimbursement_dao_impl) {
+		// TODO Auto-generated constructor stub
+	}
+
 	public Integer createReimbursement(ers_reimbursement ers_reimbursement) {
 		// TODO Auto-generated method stub
 		return null;

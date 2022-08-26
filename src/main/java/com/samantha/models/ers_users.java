@@ -48,7 +48,7 @@ public class ers_users {
 	
 	// here we have our some args constructor because  we do not need the employee id when we are creating an employee - aka inserting into the employee table
 	public ers_users(String ers_username, String ers_password, String user_first_name, String user_last_name,
-			String email, ers_user_roles user_role, List<ers_reimbursement> reimbursement) {
+			String email, ers_user_roles user_role) {
 		super();
 		this.ers_username = ers_username;
 		this.ers_password = ers_password;
@@ -56,7 +56,7 @@ public class ers_users {
 		this.user_last_name = user_last_name;
 		this.email = email;
 		this.user_role = user_role;
-		this.reimbursement = reimbursement;
+		//this.reimbursement = reimbursement;
 	}
 	
 	

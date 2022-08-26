@@ -50,7 +50,6 @@ public class user_service_impl implements user_service {
 		return false;
 	}
 
-	@Override
 	public ers_users getUserUsingUsername(String username) {
 		return user_dao.readUsername(username);
 	}
