@@ -1,6 +1,9 @@
 package com.samantha.web;
 
 import java.io.IOException;
+import java.sql.Connection;
+
+import com.samantha.util.JDBCConnectionUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +14,8 @@ import org.apache.log4j.Logger;
 
 @SuppressWarnings("serial")
 public class front_controller extends HttpServlet{
+	
+	Connection conn = JDBCConnectionUtil.getConnection();
 	
 	private static Logger logger = Logger.getLogger(front_controller.class);
 	
