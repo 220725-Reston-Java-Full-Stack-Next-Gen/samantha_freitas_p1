@@ -7,10 +7,7 @@ import com.samantha.models.ers_reimbursement;
 
 public interface reimb_service {
 
-	static Integer createReimbursement(ers_reimbursement ers_reimbursement) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Integer createReimbursement(ers_reimbursement ers_reimbursement, int reimb_Id);
 	
 	Boolean updateReimbursement(int reimb_Id, LocalDateTime reimb_resolved, int reimb_resolver, ers_reimbursement reimb_status);
 	

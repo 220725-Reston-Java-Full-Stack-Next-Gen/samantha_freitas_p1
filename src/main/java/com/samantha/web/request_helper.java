@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.samantha.dao.user_dao_impl;
 import com.samantha.models.ers_reimbursement;
+import com.samantha.models.ers_reimbursement_status;
 import com.samantha.models.ers_user_roles;
 import com.samantha.models.ers_users;
 import com.samantha.dao.reimbursement_dao_impl;
@@ -195,7 +196,8 @@ public class request_helper {
 			// This cookie can then be used with future, subquent requests as it will hold
 			// the user's information within its
 			// header info
-			ers_users target = user_service.getUserUsingUsername(values.get(0));
+			ers_users target = new ers_users();
+			target = userService.getUserUsingUsername(values.get(0));
 			resp.addCookie(new Cookie("Current-User", target.getErs_username()));
 
 			// adding JSON to response
@@ -213,29 +215,92 @@ public class request_helper {
 	}
 	
 	 public static void processReimbursement(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-	        LOGGER.info("In RequestHelper - processReimbursement() started");
-	        PrintWriter pw = resp.getWriter();
-	        int targetId = 0;
-	        ers_users currentUser = new ers_users();
-	        Cookie[] cookies = req.getCookies();
-	        if (cookies != null) {
-	            for (Cookie cookie : cookies) {
-	                if (cookie.getName().equals("Current-User")) {
-	                    LOGGER.info("Current logged in user is: " + cookie.getValue());
-	                    currentUser = user_service.getUserUsingUsername(cookie.getValue());
-	                }
-	            }
-	        }
+			LOGGER.info("In RequestHelper - processReimbursement() started");
+			int targetId = 0;
+			// first I will need to check if the user is currently logged in by checking if
+			// there is a cookie present
+			ers_users currentUser = new ers_users();
+			Cookie[] cookies = req.getCookies();
+			if (cookies != null) {
+				for (Cookie cookie : cookies) {
+					if (cookie.getName().equals("Current-User")) {
+						LOGGER.debug("Current logged in user is: " + cookie.getValue());
+						currentUser = userService.getUserUsingUsername(cookie.getValue());
+					}
+				}
+			}
+			
+			LOGGER.info("User information recieved from cookie: " + currentUser);
+			
+			//now that I got my current user, let's give them an account based on the info they provided in the request body
+			BufferedReader reader = req.getReader();
+			StringBuilder sb = new StringBuilder();
 
-	       ers_reimbursement reimbursement = new ers_reimbursement();
-	        reimbursement.setReimb_amount(Integer.valueOf(req.getParameter("reimb_amount")));
-	        reimbursement.setReimb_description(req.getParameter("reimb_description"));
-	        reimbursement.setReimb_submitted(LocalDateTime.now());
-	        reimbursement.setReimb_author(currentUser.getErs_users_Id());
-	        //reimbursement.setReimbStatusId(1);
-	        reimbursement.setReimb_type_id(1);
+			String line = reader.readLine();
 
-	        targetId = reimb_service.createReimbursement(reimbursement);
+			while (line != null) {
+				sb.append(line);
+				line = reader.readLine();
+			}
 
+			String body = sb.toString();
+
+			LOGGER.info("Request body for reimbursement registration is: " + body);
+
+			String[] info = body.replaceAll("\\{", "").replaceAll("\"", "").replaceAll("}", "").split(",");
+			List<String> values = new ArrayList<>();
+
+			for (String pair : info) {
+				LOGGER.info("Original body K/V pair: " + pair.trim());
+				String valOnly = pair.substring(pair.indexOf(":") + 1).trim();
+				LOGGER.info("Going into values arraylist --> " + valOnly);
+				values.add(valOnly);
+			}
+			
+			LOGGER.info("User information extracted is: " + values.toString());
+			
+			//Now we create the reimbursement request
+			ers_reimbursement reimbursement = new ers_reimbursement();
+			//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			reimbursement.setReimb_amount(Integer.valueOf(values.get(0)));
+			reimbursement.setReimb_submitted(LocalDateTime.now());
+			reimbursement.setReimb_description(req.getParameter(values.get(1)));
+			reimbursement.setReimb_author(currentUser.getErs_users_Id());
+			reimbursement.setReimb_type_id(Integer.valueOf(values.get(2)));  //Gets the type ID value, somehow doesn't work with value of 1 in the request
+			
+			ers_reimbursement_status reimbursement_status = new ers_reimbursement_status();
+			reimbursement_status.setReimb_status("Pending");
+			
+			// make the service method call
+			targetId = reimbService.createReimbursement(reimbursement, currentUser.getErs_users_Id());
+			reimbursement.setReimb_Id(targetId);
+			
+			
+			PrintWriter pw = resp.getWriter();
+			ObjectMapper om = new ObjectMapper();
+
+			// create the response
+			if (targetId != 0) {
+				resp.setContentType("application/json");
+				resp.setStatus(200);
+
+				// adding a HTTP cookie as a response header
+
+				// This cookie can then be used with future, subquent requests as it will hold
+				// the user's information within its
+				// header info
+				//User target = userService.getUserByUsername(values.get(0));
+				//resp.addCookie(new Cookie("Current-User", target.getUsername()));
+
+				// adding JSON to response
+				pw.println(om.writeValueAsString(reimbursement));
+
+				resp.setStatus(200);
+				LOGGER.info("Reimbursement creation successful. New Reimbursement id number: " + targetId);
+			} else {
+				resp.setStatus(401); // UNAUTHORIZED STATUS CODE = 401
+				pw.println("User has not been authorized to perform this operation. Please try again.");
+			}
+			LOGGER.info("In RequestHelper - processCreateReimbursement() ended");
 	    }
 }

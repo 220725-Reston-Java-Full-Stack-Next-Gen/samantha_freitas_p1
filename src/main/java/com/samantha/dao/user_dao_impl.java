@@ -39,7 +39,7 @@ public class user_dao_impl implements user_dao {
 		try(Connection conn = JDBCConnectionUtil.getConnection()) {
 		//This string is being created because our database understands SQL, therefore our commands must be written in the format it understands.
 		//? are wild cards. They are filled by prepared statements, which are the median between our program and the database.
-			String sql = "INSERT INTO ers_users (ers_username, ers_password, user_first_name, user_last_name, user_email, user_role_id) VALUES (?, ?, ?, ?, ?,'Employee')";  			
+			String sql = "INSERT INTO ers_users (ers_username, ers_password, user_first_name, user_last_name, user_email, user_role_type) VALUES (?, ?, ?, ?, ?,'Employee')";  			
 					
 			//prepareStatement() throws an SQLException so we must wrap the code we are trying to execute in a try catch
 			PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -66,7 +66,7 @@ public class user_dao_impl implements user_dao {
 			rs.next();
 					
 			System.out.println("I'm in the user_dao_impl class: " + rs.getInt(1));
-			targetId =  rs.getInt("user_id");
+			targetId =  rs.getInt("ers_users_Id");
 		} 		
 		catch(SQLException sqlExc) {
 			logger.warn("Unable to add new user: " + sqlExc);
@@ -101,7 +101,7 @@ public class user_dao_impl implements user_dao {
 				user.setUser_first_name(rs.getString("user_first_name"));
 				user.setUser_last_name(rs.getString("user_last_name"));
 				user.setEmail(rs.getString("user_email"));
-				user.setUser_role(new ers_user_roles(rs.getString("user_role")));
+				user.setUser_role(new ers_user_roles(rs.getString("user_role_type")));
 							
 			}						
 		} 		

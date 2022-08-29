@@ -4,12 +4,9 @@ import com.samantha.models.ers_users;
 
 public interface user_service {
 		//THINK of what logic to your app need to perform as business
-		Integer registerUser(ers_users user);
+		public Integer registerUser(ers_users user);
 		
 		public boolean loginUser(String username, String password);
 		
-		static ers_users getUserUsingUsername(String username) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+		public ers_users getUserUsingUsername(String username);
 }

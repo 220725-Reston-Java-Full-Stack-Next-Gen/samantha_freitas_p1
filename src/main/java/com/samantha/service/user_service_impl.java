@@ -50,8 +50,19 @@ public class user_service_impl implements user_service {
 		return false;
 	}
 
+	@Override
 	public ers_users getUserUsingUsername(String username) {
-		return user_dao.readUsername(username);
+		//1. log event start
+		logger.info("In UserServiceImpl - getUserByUsername() started. Username: " + username);
+		
+		//2. make my DB call
+		ers_users target = user_dao.readUsername(username);
+		
+		//3. log event end
+		logger.info("In UserServiceImpl - getUserUsingUsername() ended. Found user: " + target);
+		
+		//4. return data in return statement
+		return target;
 	}
 
 }

@@ -21,8 +21,7 @@ public class reimbursement_dao_impl implements reimbursement_dao {
 		
 		//1. open my JDBC connection
 				try(Connection conn = JDBCConnectionUtil.getConnection()){
-					String sql = "INSERT INTO ers_reimbursement (reimb_amount, reimb_submitted, reimb_description, reimb_author, reimb_status, reimb_type_id) VALUES (?,?,?,?,3,?)";
-
+					String sql = "INSERT INTO ers_reimbursement (reimb_amount, reimb_submitted, reimb_description, reimb_author, reimb_status_id, reimb_type_id) VALUES (?,?,?,?,3,?)";
 
 		            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
